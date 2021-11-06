@@ -20,7 +20,7 @@ node('workers'){
     }
 
     stage('Security Tests'){ 
-        imageTest.inside(‘-u root:root’){
+        imageTest.inside('-u root:root'){
            sh 'nancy /go/src/github/stephnangue/movies-parser/Gopkg.lock'
         }
     }
