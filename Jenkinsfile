@@ -8,15 +8,21 @@ node('workers'){
     def imageTest= docker.build("${imageName}-test", "-f Dockerfile.test .")
 
     stage('Quality Tests'){
-            imageTest.inside{
+        imageTest.inside{
             sh 'golint'
         } 
     }
 
     stage('Unit Tests'){
-            imageTest.inside{
+        imageTest.inside{
             sh 'go test'
         } 
+    }
+
+    stage('Security Tests'){ 
+        imageTest.inside(‘-u root:root’){
+           sh 'nancy /go/src/github/stephnangue/movies-parser/Gopkg.lock'
+        }
     }
 
 }
