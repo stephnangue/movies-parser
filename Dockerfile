@@ -1,4 +1,4 @@
-FROM golang:1.16.5
+FROM golang:1.16.5 AS builder
 WORKDIR /go/src/github.com/stephnangue/movies-parser
 COPY main.go go.mod .
 RUN go get -v
@@ -8,5 +8,5 @@ FROM alpine:latest
 LABEL Maintainer stephnangue
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
-COPY --from=0 /go/src/github.com/stephnangue/movies-parser/app .
+COPY --from=builder /go/src/github.com/stephnangue/movies-parser/app .
 CMD ["./app"] 
