@@ -43,7 +43,6 @@ node('workers'){
             build job: "watchlist-deployment/${env.BRANCH_NAME}"
         }
     }
-
 }
 
 def commitID() {
