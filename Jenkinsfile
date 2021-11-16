@@ -1,4 +1,6 @@
 def imageName = 'stephnangue/movies-parser'
+def registry = '982039600869.dkr.ecr.eu-central-1.amazonaws.com/stephnangue/movies-parser'
+def credentials = 'ecr:eu-central-1:jenkins_aws_id'
 
 node('workers'){
     stage('Checkout'){
@@ -25,4 +27,21 @@ node('workers'){
     stage('Build'){
         docker.build(imageName)
     }
+
+    stage('Push'){
+        docker.withRegistry("https://"+"${registry}","${credentials}") {
+            docker.image(imageName).push(commitID())
+
+            if (env.BRANCH_NAME == 'develop') {
+                docker.image(imageName).push('develop')
+            }
+        }    
+    }
+}
+
+def commitID() {
+    sh 'git rev-parse HEAD > .git/commitID'
+    def commitID = readFile('.git/commitID').trim()
+    sh 'rm .git/commitID'
+    commitID
 }
